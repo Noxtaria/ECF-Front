@@ -1,65 +1,45 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
-import { useState } from "react";
-import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { removeUser, signIn, signUp } from "./components/routes/auth/authSlice";
-import SignForm from "./components/routes/auth/SignForm";
-import Modal from "./components/routes/shared/Modal";
-
+import { Link, NavLink, Outlet } from "react-router-dom";
+import { signOut } from "./components/routes/auth/authSlice";
 
 function App() {
-  const user = useSelector(state => state.auth.user)
-  const [signFormMode, setSignFormMode] = useState("")
+  const user = useSelector(state => state.authSlice.user)
   const dispatch = useDispatch()
-
-  const onSigningHandler = async (credentials) => {
-    if (signFormMode === "Sign In") {
-      await dispatch(signIn(credentials))
-    } else if (signFormMode === "Sign Up") {
-      await dispatch(signUp(credentials))
-    }
-
-    setSignFormMode("")
-  }
+  
   return (
     <div className="App">
-      {signFormMode && createPortal(<Modal onClose={() => setSignFormMode("")} title={signFormMode}>
-        <SignForm mode={signFormMode} onSubmit={onSigningHandler} />
-      </Modal>, document.getElementById("modal-root"))}
       <header>
         <nav className="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
           <div className="container-fluid">
             <Link className="navbar-brand" to={`/`}><i className="bi bi-globe"></i> WhatIsMyIMC</Link>
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#IMC-navbar" aria-controls="IMC-navbar" aria-expanded="false" aria-label="Toggle navigation">
               <span className="navbar-toggler-icon"></span>
             </button>
-            <div className="collapse navbar-collapse" id="navbarNav">
-              <ul className="navbar-nav">
+            <div className="collapse navbar-collapse" id="WhatIsMyIMC">
+              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
-                  <NavLink className="nav-link" to={`/`}>Accueil</NavLink>
+                  <NavLink className="nav-link" to={`/`}>Home</NavLink>
                 </li>
               </ul>
+              {user ? (
+                <button className="ms-auto btn btn-secondary" onClick={() => dispatch(signOut())}>Sign Out</button>
+                ) : (
+                <>
+                  <Link className="ms-auto btn btn-outline-info" to={`/auth?mode=Sign+Up`}>Sign Up</Link>
+                  <Link className="ms-2 btn btn-primary" to={`/auth?mode=Sign+In`}>Sign In</Link>
+                </>
+              )}
             </div>
-            <div className="collapse navbar-collapse" id="eRecipe-navbar">
-            {user ? (
-              <button className="ms-auto btn btn-secondary" onClick={() => dispatch(removeUser())}>Sign Out</button>
-              ) : (
-              <>
-                <button className="ms-auto btn btn-outline-info" onClick={() => setSignFormMode("Sign Up")}>Register</button>
-                <button className="ms-2 btn btn-primary" onClick={() => setSignFormMode("Sign In")}>Sign In</button>
-              </>
-            )}
-          </div>
           </div>
         </nav>
       </header>
-      <div className="container">
-        <div className="row my-3">
-          <div className="col-10 offset-1 bg-dark text-light p-3 rounded">
+      <main className="container">
+        <div className="my-3 row">
+          <div className="col-10 offset-1 bg-dark rounded p-3 text-light">
             <Outlet />
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
