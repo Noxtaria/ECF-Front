@@ -1,8 +1,31 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
+import { useState } from "react";
+import { createPortal } from "react-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { removeUser, signIn, signUp } from "./components/routes/auth/authSlice";
+import SignForm from "./components/routes/auth/SignForm";
+import Modal from "./components/routes/shared/Modal";
+
 
 function App() {
+  const user = useSelector(state => state.auth.user)
+  const [signFormMode, setSignFormMode] = useState("")
+  const dispatch = useDispatch()
+
+  const onSigningHandler = async (credentials) => {
+    if (signFormMode === "Sign In") {
+      await dispatch(signIn(credentials))
+    } else if (signFormMode === "Sign Up") {
+      await dispatch(signUp(credentials))
+    }
+
+    setSignFormMode("")
+  }
   return (
     <div className="App">
+      {signFormMode && createPortal(<Modal onClose={() => setSignFormMode("")} title={signFormMode}>
+        <SignForm mode={signFormMode} onSubmit={onSigningHandler} />
+      </Modal>, document.getElementById("modal-root"))}
       <header>
         <nav className="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
           <div className="container-fluid">
@@ -17,6 +40,16 @@ function App() {
                 </li>
               </ul>
             </div>
+            <div className="collapse navbar-collapse" id="eRecipe-navbar">
+            {user ? (
+              <button className="ms-auto btn btn-secondary" onClick={() => dispatch(removeUser())}>Sign Out</button>
+              ) : (
+              <>
+                <button className="ms-auto btn btn-outline-info" onClick={() => setSignFormMode("Sign Up")}>Register</button>
+                <button className="ms-2 btn btn-primary" onClick={() => setSignFormMode("Sign In")}>Sign In</button>
+              </>
+            )}
+          </div>
           </div>
         </nav>
       </header>
