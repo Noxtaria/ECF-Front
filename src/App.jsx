@@ -38,6 +38,16 @@ function App() {
                 <li>
                   {user && (
                     <Link
+                      to={`/users`}
+                      className="nav-link"
+                    >
+                    List User
+                    </Link>
+                  )}
+                </li>
+                <li>
+                  {user && (
+                    <Link
                       to={`/users/add`}
                       className="nav-link"
                     >

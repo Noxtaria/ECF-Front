@@ -4,7 +4,7 @@ import SignForm from "./components/routes/auth/SignForm";
 import ErrorPage from "./components/routes/ErrorPage";
 import HomePage from "./components/routes/HomePage";
 import UserForm from "./components/routes/users/UserForm"
-import UserDisplay from "./components/routes/users/UserDisplay"
+import UserList from "./components/routes/users/UserList"
 
 const router = createBrowserRouter([
     {
@@ -26,7 +26,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "/users",
-                element: <UserDisplay />
+                element: <UserList />
               },
               {
                 path: "/users/add",

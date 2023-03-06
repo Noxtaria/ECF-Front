@@ -1,11 +1,9 @@
 import { useRef } from "react"
 import { useDispatch} from "react-redux"
-import { useNavigate} from "react-router-dom"
 import { addUser } from "./UserSlice"
 
 const UserForm = () => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   const nameRef = useRef()
   const tailleRef = useRef()
@@ -35,7 +33,6 @@ const UserForm = () => {
         await dispatch(addUser(userValues))
 
 
-    navigate(`/people`)
   }
 
   return (
@@ -59,6 +56,8 @@ const UserForm = () => {
           <label htmlFor="date" className="form-label">Date: </label>
           <input type="date" id="date" className="form-control" ref={dateRef} />
         </div>
+
+        <button className="btn btn-secondary">Enregistrer</button>
 
       </form>
     </>
